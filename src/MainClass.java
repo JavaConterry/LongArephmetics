@@ -7,7 +7,7 @@ public class MainClass {
         var some2 = new ArbitraryLength("190");
         var some3 = new ArbitraryLength("800");
         var some4 = new ArbitraryLength(9000);
-        var sum = new ArbitraryLength().sumOf(some, some2, some3, some4);
+        var sum = new ArbitraryLength().sumOf(some, some2, some3);
         sum.ToString();
 
     }
