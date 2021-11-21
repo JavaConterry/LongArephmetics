@@ -7,9 +7,8 @@ public class MainClass {
         var variable1 = new ArbitraryValue("0012");
         var variable2 = new ArbitraryValue("88");
         //var variable3 = new ArbitraryValue("5000000000000");
-
         var sum = ArbitraryValue.MakeSumOfTwo(variable1, variable2).toString();
-        System.out.println(sum);
+        System.out.println(sum);//10 needs 100
 
     }
 }
