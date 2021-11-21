@@ -4,12 +4,6 @@ import java.util.List;
 
 public class ArbitraryValue {
 
-
-    //1.создание объекта - конструкторы
-    //логика снаружи
-    // ToDo  у меня все ревеснутое, начни итераторы с конца
-
-
     private List<Integer> arbitrary = new ArrayList<>(); //contain reversed values
     private int rank = 10;
 
@@ -96,7 +90,7 @@ public class ArbitraryValue {
         }
     }
 
-    //ToDo fix bug.....
+//ToDo fix bug.....
     public static ArbitraryValue MakeSumOfTwo(ArbitraryValue first, ArbitraryValue second) {
         int MinLength = Math.min(first.length(), second.length());
         int MaxLength = Math.max(first.length(), second.length());
