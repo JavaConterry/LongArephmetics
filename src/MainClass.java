@@ -1,14 +1,8 @@
 public class MainClass {
     public static void main(String[] args) {
 
-        var crash = new ArbitraryValue("21h3");
-        System.out.println(crash.toString());
-
-        var variable1 = new ArbitraryValue("0012");
-        var variable2 = new ArbitraryValue("88");
-        var variable3 = new ArbitraryValue("5000000000000");
-        var sum = ArbitraryValue.sumOf(variable1, variable2, variable3);
-        System.out.println(sum);
-
+        var variable1 = new ArbitraryValue("321");
+        var variable2 = new ArbitraryValue("4");
+        System.out.println(variable1.multiplyTwo(variable1, variable2));
     }
 }

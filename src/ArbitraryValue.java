@@ -31,6 +31,7 @@ public class ArbitraryValue {
         arbitrary = ArbitraryList;
     }
 
+//ToDO make exception for zero-only numer
     public ArbitraryValue(String value){
         if(checkIfStringIsNumber(value)){
             for(int i=value.length()-1; i>=0; i--){
@@ -95,7 +96,7 @@ public class ArbitraryValue {
         int MaxLength = Math.max(first.length(), second.length());
         int Delta = MaxLength - MinLength;
         int Adder = 0;
-        List<Integer>  CopyFirst = first.arbitrary;
+        List<Integer> CopyFirst = first.arbitrary;
         List<Integer> CopySecond = second.arbitrary;
 
         if(MinLength == first.length()){
@@ -133,4 +134,41 @@ public class ArbitraryValue {
 
         return new ArbitraryValue(newArbitrary);
     }
+
+    public ArbitraryValue multiply(ArbitraryValue... arguments){
+        //similar to sumof()
+
+
+        return null;
+    }
+
+//FixMe please.........................
+    public ArbitraryValue multiplyTwo(ArbitraryValue firstValue, ArbitraryValue secondValue){
+        var CopyFirst = firstValue;
+        var CopySecond = secondValue;
+        var Result = new ArrayList<Integer>();
+        var Sum = new ArbitraryValue(0);
+
+        for(int j = 0; j<CopySecond.arbitrary.size()-1; j++){
+            Result.add(CopyFirst.arbitrary.indexOf(j)*CopySecond.arbitrary.indexOf(0));
+        }
+        Sum = ArbitraryValue.sumOf(Sum, new ArbitraryValue(Result));
+        Result.clear();
+
+        for(int i = 1; i<CopyFirst.arbitrary.size()-1; i++){
+            for(int j = 0; j<CopySecond.arbitrary.size()-1; j++){
+                Result.add(CopyFirst.arbitrary.indexOf(j)*CopySecond.arbitrary.indexOf(i));
+            }
+            //If we use sum, we don't need to process overflow
+            Result.add(0);
+            Sum = ArbitraryValue.sumOf(Sum, new ArbitraryValue(Result));
+            Result.clear();
+        }
+
+        System.out.println(Sum);
+
+        return null;
+    }
+
+
 }
