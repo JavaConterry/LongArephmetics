@@ -4,7 +4,7 @@ import java.util.List;
 
 public class ArbitraryValue {
 
-    private List<Integer> arbitrary = new ArrayList<>(); //contain reversed values
+    private List<Integer> arbitrary = new ArrayList<>(); //contains reversed values
     private int rank = 10;
 
 //ToDo take out the logic from the constructor
@@ -65,13 +65,13 @@ public class ArbitraryValue {
     @Override
     public String toString(){
         String result = "";
-        for(int i=arbitrary.size()-1; i>0;i--){
+        for(int i=arbitrary.size()-1; i>=0;i--){
             result += arbitrary.get(i);
         }
         return result;
     }
 
-    public int length(){
+    private int length(){
         return this.arbitrary.size();
     }
 
@@ -90,8 +90,7 @@ public class ArbitraryValue {
         }
     }
 
-//ToDo fix bug.....
-    public static ArbitraryValue MakeSumOfTwo(ArbitraryValue first, ArbitraryValue second) {
+    private static ArbitraryValue MakeSumOfTwo(ArbitraryValue first, ArbitraryValue second) {
         int MinLength = Math.min(first.length(), second.length());
         int MaxLength = Math.max(first.length(), second.length());
         int Delta = MaxLength - MinLength;
@@ -114,29 +113,24 @@ public class ArbitraryValue {
         for(int i=0; i<MaxLength; i++){
             newArbitrary.add(CopyFirst.get(i) + CopySecond.get(i));
         }
-        System.out.println(CopyFirst);
-        System.out.println(CopySecond);
-        System.out.println(newArbitrary);
 
-        //newAbitrary contains [10, 9]
         for (int i=0; i<MaxLength; i++){
             int CurrentValue = newArbitrary.get(i);
             if(Adder == 1){
                 CurrentValue += 1;
                 Adder = 0;
             }
-            //2. [0, 10] adder=0
             if(CurrentValue>=10){
                 Adder = 1;
-                CurrentValue-=10; //2. must be 0, why 1 ?
+                CurrentValue-=10;
             }
             newArbitrary.set(i, CurrentValue);
-            // 1. [0, 9] adder=1
-            // 2. [0, 0] adder=1
         }
-        if(Adder == 1){
+
+        if(Adder == 1) {
             newArbitrary.add(1);
         }
+
         return new ArbitraryValue(newArbitrary);
     }
 }
