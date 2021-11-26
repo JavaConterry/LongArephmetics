@@ -121,7 +121,7 @@ public class ArbitraryValue {
                 CurrentValue += 1;
                 Adder = 0;
             }
-            if(CurrentValue>=10){
+            if(CurrentValue>= 10){
                 Adder = 1;
                 CurrentValue-=10;
             }
@@ -142,33 +142,27 @@ public class ArbitraryValue {
         return null;
     }
 
-//FixMe please.........................
+//FixMe please.......WrongAlgorithm..................
     public ArbitraryValue multiplyTwo(ArbitraryValue firstValue, ArbitraryValue secondValue){
         var CopyFirst = firstValue;
         var CopySecond = secondValue;
-        var Result = new ArrayList<Integer>();
-        var Sum = new ArbitraryValue(0);
+        var Result = new ArbitraryValue(new ArrayList<Integer>(Math.max(firstValue.length(), secondValue.length())));
 
-        for(int j = 0; j<CopySecond.arbitrary.size()-1; j++){
-            Result.add(CopyFirst.arbitrary.indexOf(j)*CopySecond.arbitrary.indexOf(0));
-        }
-        Sum = ArbitraryValue.sumOf(Sum, new ArbitraryValue(Result));
-        Result.clear();
-
-        for(int i = 1; i<CopyFirst.arbitrary.size()-1; i++){
-            for(int j = 0; j<CopySecond.arbitrary.size()-1; j++){
-                Result.add(CopyFirst.arbitrary.indexOf(j)*CopySecond.arbitrary.indexOf(i));
+        for(int i = 0; i < CopyFirst.length(); i++){
+            for(int j = 0; j < CopySecond.length() - i; j++){
+                Result.arbitrary.add(CopyFirst.arbitrary.get(i)*CopySecond.arbitrary.get(j));
             }
-            //If we use sum, we don't need to process overflow
-            Result.add(0);
-            Sum = ArbitraryValue.sumOf(Sum, new ArbitraryValue(Result));
-            Result.clear();
         }
 
-        System.out.println(Sum);
+        for(int i = 0; i < CopyFirst.length()-1; i++){
+            Result.arbitrary.set(i+1, Result.arbitrary.get(i+1) + Result.arbitrary.get(i)/rank);
+            Result.arbitrary.set(i, Result.arbitrary.get(i) % rank);
+        }
 
-        return null;
+
+        return Result;
     }
 
 
 }
+
