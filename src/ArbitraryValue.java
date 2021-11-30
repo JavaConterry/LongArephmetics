@@ -136,31 +136,49 @@ public class ArbitraryValue {
     }
 
     public ArbitraryValue multiply(ArbitraryValue... arguments){
-        //similar to sumof()
-
-
-        return null;
+        if (arguments.length == 1) {
+            return arguments[0];
+        }
+        else if (arguments.length == 2) {
+            return multiplyTwo(arguments[0], arguments[1]);
+        } else {
+            ArbitraryValue TemporaryArgument = arguments[0];
+            for (int i = 0; i < arguments.length - 1; i++) {
+                TemporaryArgument = multiplyTwo(TemporaryArgument, arguments[i + 1]);
+            }
+            return TemporaryArgument;
+        }
     }
 
-//FixMe please.......WrongAlgorithm..................
+
     public ArbitraryValue multiplyTwo(ArbitraryValue firstValue, ArbitraryValue secondValue){
         var CopyFirst = firstValue;
         var CopySecond = secondValue;
-        var Result = new ArbitraryValue(new ArrayList<Integer>(Math.max(firstValue.length(), secondValue.length())));
+        var Result = new ArrayList<Integer>();
+        var Sum = new ArbitraryValue(0);
 
-        for(int i = 0; i < CopyFirst.length(); i++){
-            for(int j = 0; j < CopySecond.length() - i; j++){
-                Result.arbitrary.add(CopyFirst.arbitrary.get(i)*CopySecond.arbitrary.get(j));
+        for(int j = 0; j<CopyFirst.arbitrary.size(); j++){
+            Result.add(CopyFirst.arbitrary.get(j)*CopySecond.arbitrary.get(0));
+            //System.out.println(Result);
+        }
+        Sum = ArbitraryValue.sumOf(Sum, new ArbitraryValue(Result));
+        System.out.println(Sum);
+        Result.clear();
+
+        for(int i = 1; i<CopySecond.arbitrary.size(); i++){
+            for(int j = 0; j<CopyFirst.arbitrary.size(); j++){
+                Result.add(CopyFirst.arbitrary.get(j)*CopySecond.arbitrary.get(i));
+                System.out.println(Result);
             }
+            for(int k = 0; k<i; k++) {
+                Result.add(0, 0);
+            }
+            Sum = ArbitraryValue.sumOf(Sum, new ArbitraryValue(Result));
+            System.out.println(Sum);
+            Result.clear();
         }
 
-        for(int i = 0; i < CopyFirst.length()-1; i++){
-            Result.arbitrary.set(i+1, Result.arbitrary.get(i+1) + Result.arbitrary.get(i)/rank);
-            Result.arbitrary.set(i, Result.arbitrary.get(i) % rank);
-        }
-
-
-        return Result;
+        return Sum;
     }
 
 
