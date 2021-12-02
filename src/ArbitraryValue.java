@@ -151,7 +151,7 @@ public class ArbitraryValue {
     }
 
 
-    public ArbitraryValue multiplyTwo(ArbitraryValue firstValue, ArbitraryValue secondValue){
+    private ArbitraryValue multiplyTwo(ArbitraryValue firstValue, ArbitraryValue secondValue){
         var CopyFirst = firstValue;
         var CopySecond = secondValue;
         var Result = new ArrayList<Integer>();
@@ -159,28 +159,67 @@ public class ArbitraryValue {
 
         for(int j = 0; j<CopyFirst.arbitrary.size(); j++){
             Result.add(CopyFirst.arbitrary.get(j)*CopySecond.arbitrary.get(0));
-            //System.out.println(Result);
         }
         Sum = ArbitraryValue.sumOf(Sum, new ArbitraryValue(Result));
-        System.out.println(Sum);
         Result.clear();
 
         for(int i = 1; i<CopySecond.arbitrary.size(); i++){
             for(int j = 0; j<CopyFirst.arbitrary.size(); j++){
                 Result.add(CopyFirst.arbitrary.get(j)*CopySecond.arbitrary.get(i));
-                System.out.println(Result);
             }
             for(int k = 0; k<i; k++) {
                 Result.add(0, 0);
             }
             Sum = ArbitraryValue.sumOf(Sum, new ArbitraryValue(Result));
-            System.out.println(Sum);
             Result.clear();
         }
 
         return Sum;
     }
 
+    public Boolean IsSmallerOrEqual(ArbitraryValue smaller, ArbitraryValue bigger){
+        if(smaller.length() < bigger.length()){
+            return true;
+        }
+        else if(smaller.length() == bigger.length()){
+            for(int i = smaller.length()-1; i >= 0 ; i--){
+                if(smaller.arbitrary.get(i) > bigger.arbitrary.get(i)){
+                    return false;
+                }
+                else if(smaller.arbitrary.get(i) < bigger.arbitrary.get(i)){
+                    return true;
+                }
+            }
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public ArbitraryValue divide(ArbitraryValue first, ArbitraryValue second){
+        ArbitraryValue CopyFirst = first;
+        ArbitraryValue CopySecond = second;
+        var MaxLength = Math.max(CopyFirst.length(), CopySecond.length());
+        if(CopySecond.length() == MaxLength){
+            var rez = CopyFirst;
+            CopyFirst = CopySecond;
+            CopySecond = rez;
+        }
+        var factor = new ArbitraryValue(1);
+
+
+        //ToDo make simple combinations
+        while(IsSmallerOrEqual(multiply(CopySecond, factor), CopyFirst)){
+            factor = sumOf(factor, new ArbitraryValue(1));
+        }
+
+        for(int i = 0; i < CopyFirst.length()-2; i++){
+
+        }
+
+        return null;
+    }
 
 }
 
