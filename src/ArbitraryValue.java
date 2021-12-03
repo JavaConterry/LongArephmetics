@@ -48,11 +48,11 @@ public class ArbitraryValue {
 
     private List<Integer> IntegerToList(Integer value){
         List<Integer> ListOfRankedValues = new ArrayList<Integer>();
-        if(!IsSmallerOrEqual(this, new ArbitraryValue(1))) {
+        if(value>0) {
             List<Integer> ArbitraryList = new ArrayList<Integer>();
             while (value != 0) {
-                ArbitraryList.add((int) (value % 10));
-                value /= 10;
+                ArbitraryList.add((int) (value % rank));
+                value /= rank;
             }
             ListOfRankedValues = ArbitraryList;
         }
@@ -209,19 +209,40 @@ public class ArbitraryValue {
     public ArbitraryValue divide(ArbitraryValue first, ArbitraryValue second){
         ArbitraryValue CopyFirst = first;
         ArbitraryValue CopySecond = second;
-        //ToDo I added operator
         if(IsSmallerOrEqual(CopyFirst, CopySecond)){
             var rez = CopyFirst;
             CopyFirst = CopySecond;
             CopySecond = rez;
         }
-        var factor = new ArbitraryValue(1);
+        var result = new ArbitraryValue(0);
+        var factor = new ArbitraryValue(0);
+        var reminder = new ArbitraryValue(0);
+
+
+        if(CopyFirst.length()>1) {
+            var CurrentValue = getTwoLastOf(CopyFirst);
+
+            for (int i = CopyFirst.length() - 2; i >= 0; i--) {
+                while(IsSmallerOrEqual(multiplyTwo(CurrentValue, factor), CurrentValue)){
+                    result = factor;
+                    factor = sumOf(factor, new ArbitraryValue(1));
+                }
+                //ToDo needs operator minus
+            }
+        }
+
+
 
         while(IsSmallerOrEqual(multiplyTwo(CopySecond, factor), CopyFirst)){
+            result = factor;
             factor = sumOf(factor, new ArbitraryValue(1));
         }
 
-        return factor;
+        return result;
+    }
+
+    private ArbitraryValue getTwoLastOf(ArbitraryValue value){ //arbitrary value contains reversed list
+        return new ArbitraryValue(value.arbitrary.get(value.length()-1)*rank+value.arbitrary.get(value.length()-2));
     }
 
 }
