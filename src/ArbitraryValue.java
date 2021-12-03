@@ -7,50 +7,59 @@ public class ArbitraryValue {
     private List<Integer> arbitrary = new ArrayList<>(); //contains reversed values
     private int rank = 10;
 
-//ToDo take out the logic from the constructor
     public ArbitraryValue(List<Integer> value){
         List<Integer> copy = value;
         arbitrary = copy;
     }
 
     public ArbitraryValue(Integer value){
-        List<Integer> ArbitraryList = new ArrayList<Integer>();
-        while(value!=0){
-            ArbitraryList.add((int)(value%10));
-            value/=10;
-        }
-        arbitrary = ArbitraryList;
+        this.arbitrary = IntegerToList(value);
     }
 
-    public ArbitraryValue(long value){
-        List<Integer> ArbitraryList = new ArrayList<Integer>();
-        while(value!=0){
-            ArbitraryList.add((int)(value%10));
-            value/=10;
-        }
-        arbitrary = ArbitraryList;
-    }
 
-//ToDO make exception for zero-only numer
     public ArbitraryValue(String value){
+        this.arbitrary = StringToList(value);
+    }
+
+    private void deleteZerosIfArbitraryValueStartsAtZero(){
+        if(!IsSmallerOrEqual(this, new ArbitraryValue(1))) {
+            List<Integer> copy = arbitrary;
+            int i = copy.size() - 1;
+            while (copy.get(i) == 0) {
+                copy.remove(i);
+                i--;
+            }
+            arbitrary = copy;
+        }
+    }
+
+    private List<Integer> StringToList(String value) {
+        List<Integer> ListOfRankedValues = new ArrayList<Integer>();
         if(checkIfStringIsNumber(value)){
             for(int i=value.length()-1; i>=0; i--){
                 char charValue = value.charAt(i);
                 int intedCharValue = Character.getNumericValue(charValue);
-                arbitrary.add(intedCharValue);
+                ListOfRankedValues.add(intedCharValue);
             }
             deleteZerosIfArbitraryValueStartsAtZero();
         }
+        return ListOfRankedValues;
     }
 
-    private void deleteZerosIfArbitraryValueStartsAtZero(){
-        List<Integer> copy = arbitrary;
-        int i = copy.size()-1;
-        while(copy.get(i)==0){
-            copy.remove(i);
-            i--;
+    private List<Integer> IntegerToList(Integer value){
+        List<Integer> ListOfRankedValues = new ArrayList<Integer>();
+        if(!IsSmallerOrEqual(this, new ArbitraryValue(1))) {
+            List<Integer> ArbitraryList = new ArrayList<Integer>();
+            while (value != 0) {
+                ArbitraryList.add((int) (value % 10));
+                value /= 10;
+            }
+            ListOfRankedValues = ArbitraryList;
         }
-        arbitrary = copy;
+        else{
+            ListOfRankedValues.add(0);
+        }
+        return ListOfRankedValues;
     }
 
     private Boolean checkIfStringIsNumber(String value){
@@ -200,25 +209,19 @@ public class ArbitraryValue {
     public ArbitraryValue divide(ArbitraryValue first, ArbitraryValue second){
         ArbitraryValue CopyFirst = first;
         ArbitraryValue CopySecond = second;
-        var MaxLength = Math.max(CopyFirst.length(), CopySecond.length());
-        if(CopySecond.length() == MaxLength){
+        //ToDo I added operator
+        if(IsSmallerOrEqual(CopyFirst, CopySecond)){
             var rez = CopyFirst;
             CopyFirst = CopySecond;
             CopySecond = rez;
         }
         var factor = new ArbitraryValue(1);
 
-
-        //ToDo make simple combinations
-        while(IsSmallerOrEqual(multiply(CopySecond, factor), CopyFirst)){
+        while(IsSmallerOrEqual(multiplyTwo(CopySecond, factor), CopyFirst)){
             factor = sumOf(factor, new ArbitraryValue(1));
         }
 
-        for(int i = 0; i < CopyFirst.length()-2; i++){
-
-        }
-
-        return null;
+        return factor;
     }
 
 }
