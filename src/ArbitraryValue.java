@@ -16,20 +16,21 @@ public class ArbitraryValue {
         this.arbitrary = IntegerToList(value);
     }
 
-
     public ArbitraryValue(String value){
         this.arbitrary = StringToList(value);
     }
 
+
+    //too open with fields
     private void deleteZerosIfArbitraryValueStartsAtZero(){
         if(!IsSmallerOrEqual(this, new ArbitraryValue(1))) {
-            List<Integer> copy = arbitrary;
+            List<Integer> copy = this.arbitrary;
             int i = copy.size() - 1;
-            while (copy.get(i) == 0) {
+            while (copy.get(i) == 0 && i!=0) {
                 copy.remove(i);
                 i--;
             }
-            arbitrary = copy;
+            this.arbitrary = copy;
         }
     }
 
@@ -130,6 +131,7 @@ public class ArbitraryValue {
                 CurrentValue += 1;
                 Adder = 0;
             }
+            //ToDo rank field unavailable
             if(CurrentValue>= 10){
                 Adder = 1;
                 CurrentValue-=10;
@@ -206,6 +208,55 @@ public class ArbitraryValue {
         }
     }
 
+    public ArbitraryValue minus(ArbitraryValue second){
+
+        ArbitraryValue CopyFirst = this;
+        ArbitraryValue CopySecond = second;
+        int MinLength = Math.min(CopyFirst.length(), CopySecond.length());
+        int MaxLength = Math.max(CopyFirst.length(), CopySecond.length());
+        int Delta = MaxLength - MinLength;
+        int Minuser = 0;
+
+        if(IsSmallerOrEqual(CopyFirst, CopySecond)){
+            var rez = CopyFirst;
+            CopyFirst = CopySecond;
+            CopySecond = rez;
+        }
+
+        if(MinLength == CopyFirst.length()){
+            for(int i=0; i<Delta; i++){
+                CopyFirst.arbitrary.add(0);
+            }
+        }
+        else {
+            for(int i=0; i<Delta; i++){
+                CopySecond.arbitrary.add(0);
+            }
+        }
+
+        List<Integer> resultList = new ArrayList<Integer>();
+        for(int i=0; i<MaxLength; i++){
+            resultList.add(CopyFirst.arbitrary.get(i) - CopySecond.arbitrary.get(i));
+        }
+
+        for (int i=0; i<MaxLength; i++){
+            int CurrentValue = resultList.get(i);
+            if(Minuser == 1){
+                CurrentValue -= 1;
+                Minuser = 0;
+            }
+            if(CurrentValue < 0){
+                Minuser = 1;
+                CurrentValue += 10;
+            }
+            resultList.set(i, CurrentValue);
+        }
+        var result = new ArbitraryValue(resultList);
+        result.deleteZerosIfArbitraryValueStartsAtZero();
+        return new ArbitraryValue(resultList);
+    }
+
+    //FixMe bug
     public ArbitraryValue divide(ArbitraryValue first, ArbitraryValue second){
         ArbitraryValue CopyFirst = first;
         ArbitraryValue CopySecond = second;
@@ -220,23 +271,21 @@ public class ArbitraryValue {
 
 
         if(CopyFirst.length()>1) {
-            var CurrentValue = getTwoLastOf(CopyFirst);
 
             for (int i = CopyFirst.length() - 2; i >= 0; i--) {
+                var CurrentValue = getTwoLastOf(CopyFirst);
                 while(IsSmallerOrEqual(multiplyTwo(CurrentValue, factor), CurrentValue)){
                     result = factor;
                     factor = sumOf(factor, new ArbitraryValue(1));
                 }
-                //ToDo needs operator minus
+                reminder = CurrentValue.minus(result);//remove 2 privious 10^length+reminder
+                CopyFirst.arbitrary.remove(CopyFirst.length()-1);
+                CopyFirst.arbitrary.remove(CopyFirst.length()-1);
+                CopyFirst = multiplyTwo(CopyFirst, new ArbitraryValue((int)Math.pow(10, (reminder.length()-1))));
+                CopyFirst = sumOf(CopyFirst, reminder);
             }
         }
 
-
-
-        while(IsSmallerOrEqual(multiplyTwo(CopySecond, factor), CopyFirst)){
-            result = factor;
-            factor = sumOf(factor, new ArbitraryValue(1));
-        }
 
         return result;
     }
