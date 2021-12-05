@@ -266,23 +266,27 @@ public class ArbitraryValue {
             CopySecond = rez;
         }
         var result = new ArbitraryValue(0);
+        var resultOfDividingProcess = new ArbitraryValue(0);
         var factor = new ArbitraryValue(0);
         var reminder = new ArbitraryValue(0);
-
 
         if(CopyFirst.length()>1) {
 
             for (int i = CopyFirst.length() - 2; i >= 0; i--) {
                 var CurrentValue = getTwoLastOf(CopyFirst);
-                while(IsSmallerOrEqual(multiplyTwo(CurrentValue, factor), CurrentValue)){
-                    result = factor;
+                while(IsSmallerOrEqual(multiplyTwo(CopySecond, factor), CurrentValue)){
+                    resultOfDividingProcess = factor;
                     factor = sumOf(factor, new ArbitraryValue(1));
+
                 }
-                reminder = CurrentValue.minus(result);//remove 2 privious 10^length+reminder
+                System.out.println(reminder);
+                System.out.println(result);
+                reminder = CurrentValue.minus(resultOfDividingProcess);
                 CopyFirst.arbitrary.remove(CopyFirst.length()-1);
                 CopyFirst.arbitrary.remove(CopyFirst.length()-1);
-                CopyFirst = multiplyTwo(CopyFirst, new ArbitraryValue((int)Math.pow(10, (reminder.length()-1))));
+                CopyFirst = multiplyTwo(CopyFirst, new ArbitraryValue((int)Math.pow(rank, (reminder.length()-1))));
                 CopyFirst = sumOf(CopyFirst, reminder);
+                result = sumOf(multiply(result, new ArbitraryValue(rank)), resultOfDividingProcess);
             }
         }
 
