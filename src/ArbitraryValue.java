@@ -1,8 +1,8 @@
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-public class ArbitraryValue {
+//ToDo interface of calculator
+public class ArbitraryValue implements Cloneable<ArbitraryValue>{
 
     private List<Integer> arbitrary = new ArrayList<>(); //contains reversed values
     private int rank = 10;
@@ -20,17 +20,24 @@ public class ArbitraryValue {
         this.arbitrary = StringToList(value);
     }
 
-
+    public ArbitraryValue clone() throws CloneNotSupportedException{
+        return (ArbitraryValue) super.clone();
+    }
     //too open with fields
     private void deleteZerosIfArbitraryValueStartsAtZero(){
-        if(!IsSmallerOrEqual(this, new ArbitraryValue(1))) {
-            List<Integer> copy = this.arbitrary;
-            int i = copy.size() - 1;
-            while (copy.get(i) == 0 && i!=0) {
-                copy.remove(i);
-                i--;
+        try {
+            if (!IsSmallerOrEqual(this, new ArbitraryValue(1))) {
+                List<Integer> copy = this.clone().arbitrary;
+                int i = copy.size() - 1;
+                while (copy.get(i) == 0 && i != 0) {
+                    copy.remove(i);
+                    i--;
+                }
+                this.arbitrary = copy;
             }
-            this.arbitrary = copy;
+        }
+        catch (CloneNotSupportedException ex){
+            System.out.println("Clonable not implemented");
         }
     }
 
@@ -106,44 +113,52 @@ public class ArbitraryValue {
         int MaxLength = Math.max(first.length(), second.length());
         int Delta = MaxLength - MinLength;
         int Adder = 0;
-        List<Integer> CopyFirst = first.arbitrary;
-        List<Integer> CopySecond = second.arbitrary;
+        try {
 
-        if(MinLength == first.length()){
-            for(int i=0; i<Delta; i++){
-                CopyFirst.add(0);
+            List<Integer> CopyFirst = first.clone().arbitrary;
+            List<Integer> CopySecond = second.clone().arbitrary;
+
+            if (MinLength == first.length()) {
+                for (int i = 0; i < Delta; i++) {
+                    CopyFirst.add(0);
+                }
+            } else {
+                for (int i = 0; i < Delta; i++) {
+                    CopySecond.add(0);
+                }
             }
-        }
-        else {
-            for(int i=0; i<Delta; i++){
-                CopySecond.add(0);
+
+            List<Integer> newArbitrary = new ArrayList<Integer>();
+            for (int i = 0; i < MaxLength; i++) {
+                newArbitrary.add(CopyFirst.get(i) + CopySecond.get(i));
             }
-        }
 
-        List<Integer> newArbitrary = new ArrayList<Integer>();
-        for(int i=0; i<MaxLength; i++){
-            newArbitrary.add(CopyFirst.get(i) + CopySecond.get(i));
-        }
-
-        for (int i=0; i<MaxLength; i++){
-            int CurrentValue = newArbitrary.get(i);
-            if(Adder == 1){
-                CurrentValue += 1;
-                Adder = 0;
+            for (int i = 0; i < MaxLength; i++) {
+                int CurrentValue = newArbitrary.get(i);
+                if (Adder == 1) {
+                    CurrentValue += 1;
+                    Adder = 0;
+                }
+                //ToDo rank field unavailable
+                if (CurrentValue >= 10) {
+                    Adder = 1;
+                    CurrentValue -= 10;
+                }
+                newArbitrary.set(i, CurrentValue);
             }
-            //ToDo rank field unavailable
-            if(CurrentValue>= 10){
-                Adder = 1;
-                CurrentValue-=10;
+
+            if (Adder == 1) {
+                newArbitrary.add(1);
             }
-            newArbitrary.set(i, CurrentValue);
+
+            return new ArbitraryValue(newArbitrary);
+
+        }
+        catch(CloneNotSupportedException ex){
+            System.out.println("Clonable not implemented");
+            return null;
         }
 
-        if(Adder == 1) {
-            newArbitrary.add(1);
-        }
-
-        return new ArbitraryValue(newArbitrary);
     }
 
     public ArbitraryValue multiply(ArbitraryValue... arguments){
@@ -163,30 +178,37 @@ public class ArbitraryValue {
 
 
     private ArbitraryValue multiplyTwo(ArbitraryValue firstValue, ArbitraryValue secondValue){
-        var CopyFirst = firstValue;
-        var CopySecond = secondValue;
-        var Result = new ArrayList<Integer>();
-        var Sum = new ArbitraryValue(0);
+        try {
+            var CopyFirst = firstValue.clone();
+            var CopySecond = secondValue.clone();
+            var Result = new ArrayList<Integer>();
+            var Sum = new ArbitraryValue(0);
 
-        for(int j = 0; j<CopyFirst.arbitrary.size(); j++){
-            Result.add(CopyFirst.arbitrary.get(j)*CopySecond.arbitrary.get(0));
-        }
-        Sum = ArbitraryValue.sumOf(Sum, new ArbitraryValue(Result));
-        Result.clear();
-
-        for(int i = 1; i<CopySecond.arbitrary.size(); i++){
-            for(int j = 0; j<CopyFirst.arbitrary.size(); j++){
-                Result.add(CopyFirst.arbitrary.get(j)*CopySecond.arbitrary.get(i));
-            }
-            for(int k = 0; k<i; k++) {
-                Result.add(0, 0);
+            for (int j = 0; j < CopyFirst.arbitrary.size(); j++) {
+                Result.add(CopyFirst.arbitrary.get(j) * CopySecond.arbitrary.get(0));
             }
             Sum = ArbitraryValue.sumOf(Sum, new ArbitraryValue(Result));
             Result.clear();
+
+            for (int i = 1; i < CopySecond.arbitrary.size(); i++) {
+                for (int j = 0; j < CopyFirst.arbitrary.size(); j++) {
+                    Result.add(CopyFirst.arbitrary.get(j) * CopySecond.arbitrary.get(i));
+                }
+                for (int k = 0; k < i; k++) {
+                    Result.add(0, 0);
+                }
+                Sum = ArbitraryValue.sumOf(Sum, new ArbitraryValue(Result));
+                Result.clear();
+            }
+
+            return Sum;
+        }
+        catch(CloneNotSupportedException ex) {
+            System.out.println("Clonable not implemented");
+            return null;
         }
 
-        return Sum;
-    }
+}
 
     public Boolean IsSmallerOrEqual(ArbitraryValue smaller, ArbitraryValue bigger){
         if(smaller.length() < bigger.length()){
@@ -209,93 +231,61 @@ public class ArbitraryValue {
     }
 
     public ArbitraryValue minus(ArbitraryValue second){
+        try {
+            ArbitraryValue CopyFirst = this.clone();
+            ArbitraryValue CopySecond = second.clone();
+            int MinLength = Math.min(CopyFirst.length(), CopySecond.length());
+            int MaxLength = Math.max(CopyFirst.length(), CopySecond.length());
+            int Delta = MaxLength - MinLength;
+            int Minuser = 0;
 
-        ArbitraryValue CopyFirst = this;
-        ArbitraryValue CopySecond = second;
-        int MinLength = Math.min(CopyFirst.length(), CopySecond.length());
-        int MaxLength = Math.max(CopyFirst.length(), CopySecond.length());
-        int Delta = MaxLength - MinLength;
-        int Minuser = 0;
-
-        if(IsSmallerOrEqual(CopyFirst, CopySecond)){
-            var rez = CopyFirst;
-            CopyFirst = CopySecond;
-            CopySecond = rez;
-        }
-
-        if(MinLength == CopyFirst.length()){
-            for(int i=0; i<Delta; i++){
-                CopyFirst.arbitrary.add(0);
+            if (IsSmallerOrEqual(CopyFirst, CopySecond)) {
+                var rez = CopyFirst;
+                CopyFirst = CopySecond;
+                CopySecond = rez;
             }
-        }
-        else {
-            for(int i=0; i<Delta; i++){
-                CopySecond.arbitrary.add(0);
-            }
-        }
 
-        List<Integer> resultList = new ArrayList<Integer>();
-        for(int i=0; i<MaxLength; i++){
-            resultList.add(CopyFirst.arbitrary.get(i) - CopySecond.arbitrary.get(i));
-        }
-
-        for (int i=0; i<MaxLength; i++){
-            int CurrentValue = resultList.get(i);
-            if(Minuser == 1){
-                CurrentValue -= 1;
-                Minuser = 0;
-            }
-            if(CurrentValue < 0){
-                Minuser = 1;
-                CurrentValue += 10;
-            }
-            resultList.set(i, CurrentValue);
-        }
-        var result = new ArbitraryValue(resultList);
-        result.deleteZerosIfArbitraryValueStartsAtZero();
-        return new ArbitraryValue(resultList);
-    }
-
-    //FixMe bug
-    public ArbitraryValue divide(ArbitraryValue first, ArbitraryValue second){
-        ArbitraryValue CopyFirst = first;
-        ArbitraryValue CopySecond = second;
-        if(IsSmallerOrEqual(CopyFirst, CopySecond)){
-            var rez = CopyFirst;
-            CopyFirst = CopySecond;
-            CopySecond = rez;
-        }
-        var result = new ArbitraryValue(0);
-        var resultOfDividingProcess = new ArbitraryValue(0);
-        var factor = new ArbitraryValue(0);
-        var reminder = new ArbitraryValue(0);
-
-        if(CopyFirst.length()>1) {
-
-            for (int i = CopyFirst.length() - 2; i >= 0; i--) {
-                var CurrentValue = getTwoLastOf(CopyFirst);
-                while(IsSmallerOrEqual(multiplyTwo(CopySecond, factor), CurrentValue)){
-                    resultOfDividingProcess = factor;
-                    factor = sumOf(factor, new ArbitraryValue(1));
-
+            if (MinLength == CopyFirst.length()) {
+                for (int i = 0; i < Delta; i++) {
+                    CopyFirst.arbitrary.add(0);
                 }
-                System.out.println(reminder);
-                System.out.println(result);
-                reminder = CurrentValue.minus(resultOfDividingProcess);
-                CopyFirst.arbitrary.remove(CopyFirst.length()-1);
-                CopyFirst.arbitrary.remove(CopyFirst.length()-1);
-                CopyFirst = multiplyTwo(CopyFirst, new ArbitraryValue((int)Math.pow(rank, (reminder.length()-1))));
-                CopyFirst = sumOf(CopyFirst, reminder);
-                result = sumOf(multiply(result, new ArbitraryValue(rank)), resultOfDividingProcess);
+            } else {
+                for (int i = 0; i < Delta; i++) {
+                    CopySecond.arbitrary.add(0);
+                }
             }
+
+            List<Integer> resultList = new ArrayList<Integer>();
+            for (int i = 0; i < MaxLength; i++) {
+                resultList.add(CopyFirst.arbitrary.get(i) - CopySecond.arbitrary.get(i));
+            }
+
+            for (int i = 0; i < MaxLength; i++) {
+                int CurrentValue = resultList.get(i);
+                if (Minuser == 1) {
+                    CurrentValue -= 1;
+                    Minuser = 0;
+                }
+                if (CurrentValue < 0) {
+                    Minuser = 1;
+                    CurrentValue += 10;
+                }
+                resultList.set(i, CurrentValue);
+            }
+            var result = new ArbitraryValue(resultList);
+            result.deleteZerosIfArbitraryValueStartsAtZero();
+            return new ArbitraryValue(resultList);
+
         }
-
-
-        return result;
+        catch(CloneNotSupportedException ex) {
+            System.out.println("Clonable not implemented");
+            return null;
+        }
     }
 
-    private ArbitraryValue getTwoLastOf(ArbitraryValue value){ //arbitrary value contains reversed list
-        return new ArbitraryValue(value.arbitrary.get(value.length()-1)*rank+value.arbitrary.get(value.length()-2));
+    //ToDo
+    public ArbitraryValue divide(ArbitraryValue first, ArbitraryValue second){
+        return null;
     }
 
 }

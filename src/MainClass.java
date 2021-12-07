@@ -5,9 +5,10 @@ public class MainClass {
         var variable2 = new ArbitraryValue("5000");
 //        System.out.println(variable1.multiply(variable1, variable2));
 //        System.out.println(variable1.IsSmallerOrEqual(variable2, variable1));
-        var variable3 = new ArbitraryValue("100");
-        var variable4 = new ArbitraryValue("2");
+        var variable3 = new ArbitraryValue("9");
+        var variable4 = new ArbitraryValue("3");
         System.out.println(variable3.divide(variable3, variable4));
+        System.out.println(variable3);
         //System.out.println(variable1.minus(variable2));
     }
 }
