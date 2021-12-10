@@ -105,7 +105,7 @@ public class ArbitraryValue {
         int Delta = MaxLength - MinLength;
         int Adder = 0;
         List<Integer> CopyFirst = new ArbitraryValue(first.toString()).arbitrary;
-        List<Integer> CopySecond = new ArbitraryValue(first.toString()).arbitrary;
+        List<Integer> CopySecond = new ArbitraryValue(second.toString()).arbitrary;
 
         if (MinLength == first.length()) {
             for (int i = 0; i < Delta; i++) {
@@ -158,7 +158,8 @@ public class ArbitraryValue {
     }
 
 
-    private ArbitraryValue multiplyTwo(ArbitraryValue firstValue, ArbitraryValue secondValue) {
+    //ToDo !!!broken
+    public ArbitraryValue multiplyTwo(ArbitraryValue firstValue, ArbitraryValue secondValue) {
         var CopyFirst = new ArbitraryValue(firstValue.toString());
         var CopySecond = new ArbitraryValue(secondValue.toString());
         var Result = new ArrayList<Integer>();
@@ -250,19 +251,22 @@ public class ArbitraryValue {
     //ToDo
     public ArbitraryValue divideOn(ArbitraryValue second) {
         var result = new ArbitraryValue(this.toString());
-        var devider = new ArbitraryValue(second.toString());
+        var divider = new ArbitraryValue(second.toString());
 
-        if(IsSmallerOrEqual(result, devider)){
+        if(IsSmallerOrEqual(result, divider)){
             var rez = result;
-            result = devider;
-            devider = rez;
+            result = divider;
+            divider = rez;
         }
 
-        int N = devider.length();
+        int N = divider.length();
         var CurrentValue = getNLastOf(result, N);
 
         //dividing here
 
+//        while(true){
+//
+//        }
 
         return null;
     }
@@ -272,8 +276,15 @@ public class ArbitraryValue {
         return null;
     }
 
-    private ArbitraryValue findDivider(ArbitraryValue value){
-        return null;
+    public ArbitraryValue findIntResultOfDividingOn(ArbitraryValue divider){
+        var value =  new ArbitraryValue(this.toString());
+        var result = new ArbitraryValue(0);
+        var multipliyer = new ArbitraryValue(0);
+        while(IsSmallerOrEqual(multiply(multipliyer, divider), value)){
+            result = new ArbitraryValue(multipliyer.toString());
+            multipliyer = sumOf(multipliyer, new ArbitraryValue(1));
+        }
+        return result;
     }
 
 }

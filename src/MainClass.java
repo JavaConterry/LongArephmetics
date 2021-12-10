@@ -8,5 +8,8 @@ public class MainClass {
         var variable3 = new ArbitraryValue("9");
         var variable4 = new ArbitraryValue("3");
         System.out.println(variable3.minus(variable4));
+        System.out.println(variable3.multiplyTwo(variable4, variable3));
+        System.out.println(variable3.findIntResultOfDividingOn(variable4));
+        System.out.println(variable3.IsSmallerOrEqual(variable1.multiply(variable4, new ArbitraryValue(4)), variable3));
     }
 }
